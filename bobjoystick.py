@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 #This script requires the following Python modules:
 #  pygame   - http://www.pygame.org/
-#  motor
-import motor
+
+import sys
 import pygame
+
+from pygame.locals import *
+
 # allow multiple joysticks
 joy = []
 # handle joystick event
@@ -18,46 +21,29 @@ def handleJoyEvent(e):
 
         if (axis != "unknown"):
             str = "Axis: %s; Value: %f" % (axis, e.dict['value'])
-#x axis of the joystick, this controlls the speed and direction
-            if (axis == "X"):
-                pos = e.dict['value']
-                # convert joystick position to servo increment, 0-180
-                move = round(pos * 90, 0)
-                if (move < 0):
-                    speed = int(90 - abs(move))
-                    fb = 254 #forwards
-                else:
-                    speed = int(90 - abs(move))
-                    fb = 253 #go backwards
-                # and send to robot over serial connection
-                motor.move(1, speed, fb)
-#y axis of the joystick, this controlls the steering
+            print str
+	    #y axis of the joystick, this controlls the steering
             if (axis == "Y"):
                 pos = e.dict['value']
                 # convert joystick position to servo increment, 0-180
-                move = round(pos * 90, 0)
-                if (move < 0):
-                    speed = int(90 - abs(move))
-                    fb = 254
-                else:
-                    speed = int(90 - abs(move))
-                    fb = 253
-                # and send to Arduino over serial connection
-                motor.move(2, speed, fb)
     elif e.type == pygame.JOYBUTTONDOWN:
         str = "Button: %d" % (e.dict['button'])
         # Button 0 (trigger) to quit
         if (e.dict['button'] == 0):
             print "Do i have to quit?\n"
-            quit()
+            #quit()
     else:
         pass
 # wait for joystick input
 def joystickControl():
     while True:
-        e = pygame.event.wait()
-        if (e.type == pygame.JOYAXISMOTION or e.type == pygame.JOYBUTTONDOWN):
-            handleJoyEvent(e)
+	try:
+		e = pygame.event.wait()
+		if (e.type == pygame.JOYAXISMOTION or e.type == pygame.JOYBUTTONDOWN):
+		    handleJoyEvent(e)
+	except KeyboardInterrupt:
+		print "\nGot keyboard interrupt. Exiting..."
+		sys.exit(0)
 # main method
 def main():
     # initialize pygame
