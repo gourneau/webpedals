@@ -9,6 +9,7 @@ from pygame.locals import *
 
 # allow multiple joysticks
 joy = []
+
 # handle joystick event
 def handleJoyEvent(e):
     if e.type == pygame.JOYAXISMOTION:
@@ -30,10 +31,10 @@ def handleJoyEvent(e):
         str = "Button: %d" % (e.dict['button'])
         # Button 0 (trigger) to quit
         if (e.dict['button'] == 0):
-            print "Do i have to quit?\n"
-            #quit()
+            quit()
     else:
         pass
+    
 # wait for joystick input
 def joystickControl():
     while True:
@@ -61,6 +62,7 @@ def main():
     print "Pull trigger (button 0) to quit.\n"
     # run joystick listener loop
     joystickControl()
+    
 # allow use as a module or standalone script
 if __name__ == "__main__":
     main()
